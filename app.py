@@ -7,6 +7,17 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from typing import List, Tuple
+import os # Tambahkan import os
+
+# =====================================================================================
+# BLOK KODE BARU UNTUK MEMASTIKAN PATH NLTK DITEMUKAN
+# =====================================================================================
+nltk_data_dir = "/home/appuser/nltk_data"
+if nltk_data_dir not in nltk.data.path:
+    nltk.data.path.append(nltk_data_dir)
+# =====================================================================================
+
+
 
 # =====================================================================================
 # KONFIGURASI DAN INISIALISASI AWAL (MENGGUNAKAN CACHING)
