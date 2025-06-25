@@ -7,23 +7,41 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from typing import List, Tuple
-import os # Tambahkan import os
+import os
 
 # =====================================================================================
-# BLOK KODE BARU UNTUK MEMASTIKAN PATH NLTK DITEMUKAN
-# =====================================================================================
-nltk_data_dir = "/home/appuser/nltk_data"
-if nltk_data_dir not in nltk.data.path:
-    nltk.data.path.append(nltk_data_dir)
+# INISIALISASI NLTK YANG SANGAT ROBUST (STRATEGI BARU)
 # =====================================================================================
 
+def download_nltk_resources():
+    """
+    Fungsi untuk memeriksa dan mengunduh resource NLTK yang diperlukan.
+    Ini adalah fallback jika nltk.txt gagal atau tidak terdeteksi tepat waktu.
+    """
+    try:
+        # Cek stopwords
+        nltk.data.find('corpora/stopwords')
+        print("Resource 'stopwords' sudah ada.")
+    except LookupError:
+        print("Resource 'stopwords' tidak ditemukan, mengunduh sekarang...")
+        nltk.download('stopwords')
 
+    try:
+        # Cek punkt
+        nltk.data.find('tokenizers/punkt')
+        print("Resource 'punkt' sudah ada.")
+    except LookupError:
+        print("Resource 'punkt' tidak ditemukan, mengunduh sekarang...")
+        nltk.download('punkt')
+
+# Panggil fungsi download di awal eksekusi skrip
+download_nltk_resources()
 
 # =====================================================================================
-# KONFIGURASI DAN INISIALISASI AWAL (MENGGUNAKAN CACHING)
+# KONFIGURASI DAN INISIALISASI AWAL (setelah NLTK dipastikan ada)
 # =====================================================================================
 
-# Konfigurasi halaman Streamlit (harus menjadi perintah st pertama)
+# Konfigurasi halaman Streamlit
 st.set_page_config(
     page_title="Analisis Sentimen Aplikasi TRIV",
     page_icon="🎯",
@@ -34,16 +52,19 @@ st.set_page_config(
 
 @st.cache_resource
 def get_stemmer():
-    """Membuat dan meng-cache Sastrawi Stemmer agar tidak dibuat ulang setiap saat."""
+    """Membuat dan meng-cache Sastrawi Stemmer."""
     factory = StemmerFactory()
     return factory.create_stemmer()
 
 @st.cache_data
 def get_stopwords_list() -> set:
     """Menggabungkan dan meng-cache daftar stopwords Indonesia & Inggris."""
+    # Baris ini sekarang seharusnya aman untuk dijalankan
     stop_words_id = set(stopwords.words('indonesian'))
     stop_words_en = set(stopwords.words('english'))
     return stop_words_id.union(stop_words_en)
+
+# ... (sisa kode Anda dari @st.cache_resource def load_models() dst. tidak perlu diubah) ...
 
 @st.cache_resource
 def load_models() -> Tuple[object, object]:
