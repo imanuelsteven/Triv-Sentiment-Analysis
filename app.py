@@ -6,9 +6,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import re
 import string
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize  # Tokenisasi teks
+from nltk.corpus import stopwords  # Daftar kata-kata berhenti dalam teks
 import nltk
+nltk.download('punkt')  # Mengunduh dataset yang diperlukan untuk tokenisasi teks.
+nltk.download('stopwords')  # Mengunduh dataset yang berisi daftar kata-kata berhenti (stopwords) dalam berbagai bahasa.
 
 # Download NLTK data jika belum ada
 try:
